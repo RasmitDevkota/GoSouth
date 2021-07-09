@@ -1,23 +1,12 @@
 package com.alientech.gosouth
 
-import com.alientech.gosouth.Node
+import java.util.*
 
-class Path {
-    lateinit var dest: ArrayList<Node>
+class Path(origin: Node, dest: Node) {
+    var path: NodeList = alg.pathfind(origin, dest)
 
-    fun init(origin: Node, dest: Node): Boolean {
-
-
-
-        return true
-    }
-
-  /*  var distance: Float = 0.0f
-      get() {
-          return alg.distance(this.origin.long, this.origin.lat, this.dest.long, this.dest.lat)
-      }
-
-      set(val) {
-        field = val
-      }*/
+    val distance: Float
+        get() {
+          return alg.distance(this.path[0], this.path[1])
+        }
 }

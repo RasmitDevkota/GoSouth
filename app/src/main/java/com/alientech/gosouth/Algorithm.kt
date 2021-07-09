@@ -2,30 +2,100 @@ package com.alientech.gosouth
 
 import kotlin.math.*
 
+typealias NodeList = ArrayList<Node>
+
+val alg = Algorithm()
+
 class Algorithm {
-    fun distance(latA: Float, longA: Float, latB: Float, longB: Float): Float {
-        val latArad = Math.toRadians(latA.toDouble())
-        val latBrad = Math.toRadians(latB.toDouble())
+    lateinit var graph: Graph
 
-        val latDelta = latBrad - latArad
-        val longDelta = Math.toRadians(longB.toDouble() - longA.toDouble())
+    // Initialization
+    /**
+     * Used to build graph from data variable
+     * @see data
+     */
+    fun build() {
 
-        val a = hav(latDelta) + hav(longDelta) * cos(latArad) * cos(latBrad)
-        val c = 2 * asin(sqrt(a))
-
-        return c.toFloat() * 6378137
     }
 
-    fun hav(theta: Double): Float {
-        return sin(theta.toFloat()/2).pow(2)
+    // Navigation
+    /**
+     * Used to generate Path object from Node to Node
+     *
+     * Used for UI
+     */
+    fun navigate(origin: Node, destination: Node): Path {
+        return Path(origin, destination)
+    }
+
+    /**
+     * Used to generate Path object from current location to Node
+     *
+     * Used for UI
+     */
+    fun navigate(origin: Coordinate, destination: Node): Path {
+        return Path(Node(origin), destination)
+    }
+
+    // Pathfinding (A*)
+    /**
+     * Used to calculate path from Node to Node
+     *
+     * Used to initialize Path object
+     */
+    fun pathfind(origin: Node, destination: Node): NodeList {
+        val path: NodeList = arrayListOf()
+
+        path.add(origin)
+
+        // Calculate and add intermediary nodes
+        // ...
+
+        path.add(destination)
+
+        return path
+    }
+
+    // Distance
+    /**
+     * Used to calculate distance from Coordinate to Coordinate
+     */
+    fun distance(A: Coordinate, B: Coordinate): Float {
+        val latA = A.latitude
+        val latB = B.latitude
+
+        val latDelta = latB - latA
+        val longDelta = B.longitude - A.longitude
+
+        val a = hav(latDelta) + hav(longDelta) * cos(latA) * cos(latB)
+
+        return 2 * asin(sqrt(a)) * 6378137
+    }
+
+    /**
+     * Used to calculate distance from Node to Node
+     */
+    fun distance(A: Node, B: Node): Float {
+        val radA = A.coordinate.inRadians()
+        val radB = B.coordinate.inRadians()
+
+        return distance(radA, radB)
+    }
+
+    // Math
+    /**
+     * Implements Haversine Formula
+     */
+    fun hav(theta: Float): Float {
+        return sin(theta/2).pow(2)
     }
 }
 
 /*
 Initialization:
-  1. List of coordinates
-  2. Assemble (minimal) Graph and store in a variable (in Algorithm object)
-  3. (Background) assemble rest of graph
+    1. List of coordinates
+    2. Assemble (minimal) Graph and store in a variable (in Algorithm object)
+    3. (Background) assemble rest of graph
 
 Request:
     1. Find their coordinate
